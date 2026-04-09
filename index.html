@@ -1,0 +1,108 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bing Rewards - Safari Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .safari-blue { background: #0078d4; }
+        .safari-card { border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+        .search-link:visited { color: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 font-sans text-slate-900">
+
+    <div class="safari-card bg-white w-full max-w-md overflow-hidden border border-slate-100">
+        <!-- Header -->
+        <div class="safari-blue p-8 text-white">
+            <h1 class="text-2xl font-bold italic">Bing Automator</h1>
+            <p class="text-blue-100 text-sm">Optimized for Safari & iOS</p>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <!-- Setup -->
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Search Count</label>
+                    <input type="number" id="count" value="30" class="w-full bg-slate-100 p-4 rounded-2xl font-bold text-lg outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Instruction Box -->
+            <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-sm text-blue-800 leading-relaxed">
+                <strong>Safari instructions:</strong><br>
+                1. Click "Generate Search List" below.<br>
+                2. Tap each link one by one. Safari allows this because every tab opens exactly when you touch it.
+            </div>
+
+            <button id="genBtn" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all active:scale-95">
+                Generate Search List
+            </button>
+
+            <!-- Search List Area -->
+            <div id="listContainer" class="hidden space-y-3 pt-4 border-t border-slate-100">
+                <div class="flex justify-between items-center px-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase">Your Links</span>
+                    <span id="counter" class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-lg">0 / 30</span>
+                </div>
+                <div id="linksWrapper" class="grid grid-cols-5 gap-2 max-h-60 overflow-y-auto p-1">
+                    <!-- Links injected here -->
+                </div>
+                <p class="text-[10px] text-center text-slate-400">Links turn gray once clicked.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const wordBank = ["weather", "news", "coding", "space", "nature", "history", "cars", "pizza", "movies", "music", "finance", "travel", "health", "science", "art", "gaming", "fitness", "fashion", "books", "dogs"];
+        
+        const genBtn = document.getElementById('genBtn');
+        const listContainer = document.getElementById('listContainer');
+        const linksWrapper = document.getElementById('linksWrapper');
+        const counter = document.getElementById('counter');
+
+        function getRandomQuery() {
+            const w1 = wordBank[Math.floor(Math.random() * wordBank.length)];
+            const w2 = wordBank[Math.floor(Math.random() * wordBank.length)];
+            return `${w1} ${w2} ${Math.floor(Math.random() * 999)}`;
+        }
+
+        let clickedCount = 0;
+
+        genBtn.onclick = () => {
+            const total = parseInt(document.getElementById('count').value);
+            linksWrapper.innerHTML = '';
+            clickedCount = 0;
+            updateCounter(total);
+
+            for (let i = 1; i <= total; i++) {
+                const query = getRandomQuery();
+                const a = document.createElement('a');
+                a.href = `https://www.bing.com/search?q=${encodeURIComponent(query)}`;
+                a.target = "_blank";
+                a.innerText = i;
+                a.className = "search-link flex items-center justify-center bg-slate-100 aspect-square rounded-xl font-bold text-slate-700 hover:bg-blue-500 hover:text-white transition-colors border border-slate-200";
+                
+                a.onclick = () => {
+                    a.classList.add('opacity-30', 'bg-slate-300');
+                    clickedCount++;
+                    updateCounter(total);
+                };
+
+                linksWrapper.appendChild(a);
+            }
+
+            listContainer.classList.remove('hidden');
+            genBtn.innerText = "Regenerate List";
+        };
+
+        function updateCounter(total) {
+            counter.innerText = `${clickedCount} / ${total}`;
+        }
+    </script>
+</body>
+</html>
+
+```
